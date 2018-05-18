@@ -1,0 +1,617 @@
+<style>
+    .marketFooter{
+        font-size: 10px;
+        opacity: 0.6;
+    }
+    #networkLastReward{
+        text-transform: uppercase;
+    }
+    #lastHash{
+        font-family: 'Inconsolata', monospace;
+        font-size: 0.8em;
+    }
+    #poolDonations{
+        font-size: 0.75em;
+    }
+    #miningProfitCalc{
+        margin: 35px 0;
+		overflow: visible;
+    }
+    #calcHashDropdown{
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+    #calcHashHolder{
+         max-width: 100%;
+    }
+    #calcHashRate{
+        z-index: inherit;
+        font-family: 'Inconsolata', monospace;
+    }
+    #calcHashAmount{
+        font-family: 'Inconsolata', monospace;
+    }
+    #calcHashResultsHolder{
+        min-width: 145px;
+        max-width: 145px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    #yourStatsInput{
+        z-index: inherit;
+        font-family: 'Inconsolata', monospace;
+    }
+    #yourAddressDisplay > span {
+        font-family: 'Inconsolata', monospace;
+    }
+    #lookUp > span:nth-child(2){
+        display: none;
+    }
+    .yourStats{
+        display: none;
+		color: #000;
+	}
+    #yourAddressDisplay{
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        font-family: 'Inconsolata', monospace;
+        font-size: 0.9em;
+    }
+    #addressError{
+        color: red;
+    }
+
+
+    #payments_rows > tr > td{
+        vertical-align: middle;
+        font-family: 'Inconsolata', monospace;
+        font-size: 0.95em;
+        text-align: center;
+    }
+    #payments_rows > tr > td:nth-child(2){
+        text-align: left;
+    }
+
+</style>
+
+
+<div id="siteInfo">
+    <!-- Description or information about this pool -->
+</div>
+
+<div class="alert alert-danger">
+  <strong>This pool is still a BETA-Network on TestNet!</strong> You will not receive real QRL for mining at this time, however, mining on our pool helps us test the hardware and configuration prior to going live. We will update you as soon as we have date for the migration to MainNet.
+</div>
+
+<div class="grid-x grid-padding-x flexDisplay">
+    <div class="medium-3 cell stats boxedcontent">
+        <div class="boxtitle">
+			<h3>QRL Network</h3>
+		</div>
+		<div class="paddedtext">
+			<div><i class="fa fa-tachometer"></i> Hash Rate: <span id="networkHashrate"></span></div>
+			<div><i class="fa fa-clock-o"></i> Block Found: <span id="networkLastBlockFound"></span></div>
+			<div><i class="fa fa-unlock-alt"></i> Difficulty: <span id="networkDifficulty"></span></div>
+			<div><i class="fa fa-bars"></i> Blockchain Height: <span id="blockchainHeight"></span></div>
+			<div><i class="fa fa-money"></i> Last Reward: <span id="networkLastReward"></span></div>
+			<div><i class="fa fa-paw"></i> Last Hash: <a id="lastHash" target="_blank"></a></div>
+		</div>
+    </div>
+
+    <div class="medium-3 cell stats boxedcontent spacinglogic">
+        <div class="boxtitle">
+			<h3>QRL Mining</h3>
+		</div>
+		<div class="paddedtext">
+			<div><i class="fa fa-tachometer"></i> Hash Rate: <span id="poolHashrate"></span></div>
+			<div><i class="fa fa-clock-o"></i> Block Found: <span id="poolLastBlockFound"></span></div>
+			<div><i class="fa fa-users"></i> Connected Miners: <span id="poolMiners"></span></div>
+			<div><i class="fa fa-money"></i> Total Pool Fee: <span id="poolFee"></span></div>
+			<div><i class="fa fa-history"></i> Block Found Every: <span id="blockSolvedTime"></span> (est.)</div>
+		</div>
+    </div>
+
+    <div class="medium-3 cell stats boxedcontent spacinglogic">
+		<h3 id="marketHeader" class="markettitle">QRL Market</h3>
+		<div class="paddedtext">
+			<div class="marketFooter">Updated: <span id="marketLastUpdated"></span></div>
+			<div class="marketFooter">Powered by <a href="https://www.cryptonator.com/" target="_blank">Cryptonator</a></div>
+		</div>
+    </div>
+</div>
+
+<div class="grid-x grid-padding-x">
+<div class="boxedcontent fullwidth">
+        <div class="boxtitle">
+        <h3 style="color: #d8d8d8;">QRL Market Details</h3>
+    </div>
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com" rel="noopener" target="_blank"><span class="blue-text">Quotes</span></a> by TradingView</div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+  {
+  "symbols": [
+    {
+      "description": "QRL-BTC",
+      "proName": "BITTREX:QRLBTC"
+    },
+    {
+      "description": "QRL - USD",
+      "proName": "BITTREX:QRLUSD"
+    },
+    {
+      "description": "QRL - ETH",
+      "proName": "BITTREX:QRLETH"
+    },
+    {
+      "description": "BTC - USD",
+      "proName": "COINBASE:BTCUSD"
+    },
+    {
+      "description": "ETH - USD",
+      "proName": "COINBASE:ETHUSD"
+    }
+  ],
+  "locale": "en"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+</div>
+</div>
+<div class="grid-x grid-padding-x">
+
+<div id="miningProfitCalc" class="boxedcontent fullwidth">
+	<div class="boxtitle">
+		<h3 style="color: #d8d8d8;">Estimate Mining Profits</h3>
+	</div>
+    <div id="calcHashHolder" class="calcHashStyle">
+        <div class="input-group">
+            <input type="number" class="form-control" id="calcHashRate" placeholder="Enter Your Hash Rate">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="calcHashDropdown">
+                    <span id="calcHashUnit" data-mul="1">KH/s</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu" id="calcHashUnits">
+                    <li><a href="#" data-mul="0">H/s</a></li>
+                    <li><a href="#" data-mul="1">KH/s</a></li>
+                    <li><a href="#" data-mul="2">MH/s</a></li>
+                </ul>
+            </div>
+            <span class="input-group-addon">=</span>
+            <span class="input-group-addon" id="calcHashResultsHolder"><span id="calcHashAmount"></span> <span id="calcHashSymbol"></span>/day</span>
+        </div>
+    </div>
+</div>
+</div>
+<div class="grid-x grid-padding-x">
+
+<div class="stats boxedcontent">
+	<div class="boxtitle">
+		<h3>Your Stats & Payment History</h3>
+	</div>
+    <div class="input-group statsbar">
+        <input class="form-control" id="yourStatsInput" type="text" placeholder="Enter Your Address">
+        <span class="input-group-btn"><button class="btn btn-default" type="button" id="lookUp">
+            <span><i class="fa fa-search"></i> Lookup</span>
+            <span><i class="fa fa-refresh fa-spin"></i> Searching...</span>
+        </button></span>
+    </div>
+
+    <div id="addressError"></div>
+    <div class="yourStats"><i class="fa fa-key"></i> Address: <span id="yourAddressDisplay"></span></div>
+    <div class="yourStats"><i class="fa fa-bank"></i> Pending Balance: <span id="yourPendingBalance"></span></div>
+    <div class="yourStats"><i class="fa fa-money"></i> Total Paid: <span id="yourPaid"></span></div>
+    <div class="yourStats"><i class="fa fa-clock-o"></i> Last Share Submitted: <span id="yourLastShare"></span></div>
+    <div class="yourStats"><i class="fa fa-tachometer"></i> Hash Rate: <span id="yourHashrateHolder"></span></div>
+    <div class="yourStats"><i class="fa fa-cloud-upload"></i> Total Hashes Submitted: <span id="yourHashes"></span></div>
+
+    <br class="yourStats">
+
+    <h4 class="yourStats">Payments</h4>
+    <div class="yourStats table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th><i class="fa fa-clock-o"></i> Time Sent</th>
+                <th><i class="fa fa-paw"></i> Transaction Hash</th>
+                <th><i class="fa fa-money"></i> Amount</th>
+                <th><i class="fa fa-sitemap"></i> Mixin</th>
+            </tr>
+            </thead>
+            <tbody id="payments_rows">
+
+            </tbody>
+        </table>
+    </div>
+    <p class="yourStats text-center">
+        <button type="button" class="btn btn-default" id="loadMorePayments">Load More</button>
+    </p>
+
+</div>
+</div>
+
+
+
+          <div class="grid-x grid-padding-x">
+          <!-- TimeLine -->
+            <div class="small-10 small-offset-1 cell">
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <img src="" class="" height="22" width="22" alt="">
+                  </div>
+                  <div class="timeline-content right">
+                    <p class="timeline-content-date">What Is QRL Mining <span class="timeline-content-month"></span></p>
+                    <p>The QRL Mining Pool is a Stratum server mining on the QRL blockchain. QRL uses the Cryptonight mining algorithm to preform hashing functions. This pool combines workers together to allow a greater chance at winning a block</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <img src="" class="" height="22" width="22" alt="">
+                  </div>
+                  <div class="timeline-content">
+                    <p class="timeline-content-date">QRL (Quantum Resistant Ledger): <span class="timeline-content-month"></span></p>
+                    <p>
+                      <ul class="no-bullet">
+                        <li>Coin Symbol: <strong>QRL</strong></li>
+                        <li>Website: <a href="https://theqrl.org/" target="_blank">https://theqrl.org/</a></li>
+                        <li>Block Explorer: <a href="https://explorer.theqrl.org" target="_blank">Explorer.theQRL.org</a></li>
+                        <li> <a href="https://wallet.theqrl.org" target="_blank">QRL Wallet</a></li>
+                        <li>GitHub: <a href="https://github.com/theQRL" target="_blank">TheQRL</a></li>
+                        <li>Chat: <a href="https://discord.gg/RcR9WzX" target="_blank">Discord</a></li>
+                        <li>Announcment: <a href="https://bitcointalk.org/index.php?topic=1730273.0" target="_blank">Bitcoin Talk</a></li>
+                      </ul>
+                    </p>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-icon">
+                      <img src="" class="" height="22" width="22" alt="">
+                    </div>
+                    <div class="timeline-content right">
+                      <p class="timeline-content-date"><span class="timeline-content-month"></span></p>
+                      <p class="timeline-content-date">Why should I use a pool? <span class="timeline-content-month"></span></p>
+                      <p>Mining is becoming more and more popular by the day and new people are joining everyday.  More importantly, large scale mining enterprises are entering the network with massive hashing power.  This ensures that single miners will very rarely (if ever) win a block.  A mining pool lets smaller miners band together to share their hashrate.  In this way, the pool can win blocks against the big miners and distribute to the pool members based upon their given power.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-icon">
+                      <img src="" class="" height="22" width="22" alt="">
+                    </div>
+                    <div class="timeline-content">
+                      <p class="timeline-content-date">Why did you make a pool? <span class="timeline-content-month"></span></p>
+                      <p>We want the QRL network to succeed.  We think that is best accomplished by having QRL enthusiasts be the backbone of the network and win the appropriate rewards.  We don't want botnets and business enterprises getting everything.  Plain and simple, we want the little guy to get their share as well.</p>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-icon">
+                      <img src="" class="" height="22" width="22" alt="">
+                    </div>
+                    <div class="timeline-content right">
+                      <p class="timeline-content-date">Mining seems complicated... <span class="timeline-content-month"></span></p>
+                      <p>Mining software can be a bit complicated but our pool will help with all of that.  Take a look at the site for an array of helpful tutorials on getting your miner going.  If you are still having problems, jump into the <a href="https://discord.gg/ceTcsdv">discord chat</a>and we can walk you through the steps.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- end timeline -->
+            </div>
+        <div class="small-12 cell">
+          <div class="marketing-site-features grey-trans" data-equalizer>
+            <h2 class="marketing-site-features-headline">QRL Mining Pool Features</h2>
+            <p class="marketing-site-features-subheadline subheader"></p>
+            <div class="grid-x grid-padding-x flexDisplay">
+              <div class="small-12 medium-4 cell" data-equalizer-watch>
+                <i class="fa" aria-hidden="true"></i>
+                <h4 class="marketing-site-features-title">First QRL Pool</h4>
+                <p class="marketing-site-features-desc"> While there may be other choices when it comes to pools, this is the <strong>FIRST</strong> QRL pool on the market. We have been mining QRL as a pool since the testnet release of pool software; some of us were even testing during QRL’s alpha phase. Our team was up and running long before that developing strategies and enhancements to reward our community further. Our first mover advantage makes us the most stable and developed pool you are going to get.</p>
+              </div>
+              <div class="small-12 medium-4 cell" data-equalizer-watch>
+                <i class="fa" aria-hidden="true"></i>
+                <h4 class="marketing-site-features-title">Community Developed </h4>
+                <p class="marketing-site-features-desc">Founded on community involvement, we believe that we are stronger as a group. The development of this pool will be driven by the involvement and will of our community. We will have a variety of ways for members to vote and push for new enhancements that they care about. We are aiming to be an interactive community that empowers its members to make real changes.</p>
+              </div>
+              <div class="small-12 medium-4 cell" data-equalizer-watch>
+                <i class="fa " aria-hidden="true"></i>
+                <h4 class="marketing-site-features-title">Future Focused</h4>
+                <p class="marketing-site-features-desc"> QRL will hard fork to PoS in Q3 2018 which may impact your decision to invest in equipment. Other pools are solely focused on QRL and will leave you hanging when the network moves to PoS, as they take their profits and leave. Our pool is focused on serving the community and ensuring their investment is maximized. As part of our guiding principles, we will focus on QRL mining in the beginning (we really do believe in the future of this coin) and then implement coin switching mechanisms into our pool. We will also develop tools to track price trends and news of other coins to give members a better understanding of the coin market. That way, when PoS rolls out, our pool will seamlessly transition to a modern, reward maximizing coin pool.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<br>
+<br>
+<script>
+
+
+    currentPage = {
+        destroy: function(){
+            $('#networkLastBlockFound,#poolLastBlockFound,#yourLastShare,#marketLastUpdated').timeago('dispose');
+            if (xhrAddressPoll) xhrAddressPoll.abort();
+            if (addressTimeout) clearTimeout(addressTimeout);
+            clearInterval(intervalMarketPolling);
+            for (var marketPoll in xhrMarketGets){
+                xhrMarketGets[marketPoll].abort();
+            }
+            if (xhrGetPayments) xhrGetPayments.abort();
+        },
+        update: function(){
+
+            $('#networkLastBlockFound').timeago('update', new Date(lastStats.network.timestamp * 1000).toISOString());
+
+            updateText('networkHashrate', getReadableHashRateString(lastStats.network.difficulty / 120) + '/sec');
+            updateText('networkDifficulty', lastStats.network.difficulty.toString());
+            updateText('blockchainHeight', lastStats.network.height.toString());
+            updateText('networkLastReward', getReadableCoins(lastStats.network.reward, 4));
+            updateText('lastHash', lastStats.network.hash.substr(0, 13) + '...').setAttribute('href',
+                blockchainExplorer + lastStats.network.hash
+            );
+
+            updateText('poolHashrate', getReadableHashRateString(lastStats.pool.hashrate) + '/sec');
+
+            if (lastStats.pool.lastBlockFound){
+                var d = new Date(parseInt(lastStats.pool.lastBlockFound)).toISOString();
+                $('#poolLastBlockFound').timeago('update', d);
+            }
+            else
+                $('#poolLastBlockFound').removeAttr('title').data('ts', '').update('Never');
+
+            //updateText('poolRoundHashes', lastStats.pool.roundHashes.toString());
+            updateText('poolMiners', lastStats.pool.miners.toString());
+
+
+            var totalFee = lastStats.config.fee;
+            if (lastStats.config.doDonations){
+                totalFee += lastStats.config.donation;
+                totalFee += lastStats.config.coreDonation;
+                var feeText = [];
+                if (lastStats.config.donation > 0) feeText.push(lastStats.config.donation + '% to pool dev');
+                if (lastStats.config.coreDonation > 0) feeText.push(lastStats.config.coreDonation + '% to core devs');
+                updateText('poolDonations', feeText.join(', '));
+            }
+            else{
+                updateText('poolDonations', '');
+            }
+
+            updateText('poolFee', totalFee + '%');
+
+
+            updateText('blockSolvedTime', getReadableTime(lastStats.network.difficulty / lastStats.pool.hashrate));
+            updateText('calcHashSymbol', lastStats.config.symbol);
+
+            calcEstimateProfit();
+        }
+    };
+
+
+    $('#networkLastBlockFound,#poolLastBlockFound,#yourLastShare,#marketLastUpdated').timeago();
+
+
+    function getReadableTime(seconds){
+
+        var units = [ [60, 'second'], [60, 'minute'], [24, 'hour'],
+            [7, 'day'], [4, 'week'], [12, 'month'], [1, 'year'] ];
+
+        function formatAmounts(amount, unit){
+            var rounded = Math.round(amount);
+            return '' + rounded + ' ' + unit + (rounded > 1 ? 's' : '');
+        }
+
+        var amount = seconds;
+        for (var i = 0; i < units.length; i++){
+            if (amount < units[i][0])
+                return formatAmounts(amount, units[i][1]);
+            amount = amount / units[i][0];
+        }
+        return formatAmounts(amount,  units[units.length - 1][1]);
+    }
+
+    function getReadableHashRateString(hashrate){
+        var i = 0;
+        var byteUnits = [' H', ' KH', ' MH', ' GH', ' TH', ' PH' ];
+        while (hashrate > 1000){
+            hashrate = hashrate / 1000;
+            i++;
+        }
+        return hashrate.toFixed(2) + byteUnits[i];
+    }
+
+
+
+
+    /* Market data polling */
+
+    var intervalMarketPolling = setInterval(updateMarkets, 300000); //poll market data every 5 minutes
+    var xhrMarketGets = {};
+    updateMarkets();
+    function updateMarkets(){
+        var completedFetches = 0;
+        var marketsData = [];
+        for (var i = 0; i < cryptonatorWidget.length; i++){
+            (function(i){
+                xhrMarketGets[cryptonatorWidget[i]] = $.get('https://api.cryptonator.com/api/ticker/' + cryptonatorWidget[i], function(data){
+                    marketsData[i] = data;
+                    completedFetches++;
+                    if (completedFetches !== cryptonatorWidget.length) return;
+
+                    var $marketHeader = $('#marketHeader');
+                    $('.marketTicker').remove();
+                    for (var f = marketsData.length - 1; f >= 0 ; f--){
+                        var price = parseFloat(marketsData[f].ticker.price);
+
+                        if (price > 1) price = Math.round(price * 100) / 100;
+                        else price = marketsData[f].ticker.price;
+
+                        $marketHeader.after('<div class="marketTicker">' + marketsData[f].ticker.base + ': <span>' + price + ' ' + marketsData[f].ticker.target + '</span></div>');
+                    }
+                    $('#marketLastUpdated').timeago('update', new Date(marketsData[0].timestamp * 1000).toISOString());
+                }, 'json');
+            })(i);
+        }
+    }
+
+
+
+
+
+    /* Hash Profitability Calculator */
+
+    $('#calcHashRate').keyup(calcEstimateProfit).change(calcEstimateProfit);
+
+    $('#calcHashUnits > li > a').click(function(e){
+        e.preventDefault();
+        $('#calcHashUnit').text($(this).text()).data('mul', $(this).data('mul'));
+        calcEstimateProfit();
+    });
+
+    function calcEstimateProfit(){
+        try {
+            var rateUnit = Math.pow(1000,parseInt($('#calcHashUnit').data('mul')));
+            var inp2 = parseFloat($('#calcHashRate').val()) * rateUnit;
+            var resl = ( lastStats.network.reward / coinUnits) / ((lastStats.network.difficulty / inp2) / 86400  );
+            if (!isNaN(resl)) {
+                updateText('calcHashAmount', (Math.round(resl * 100) / 100).toString());
+                return;
+            }
+        }
+        catch(e){ }
+        updateText('calcHashAmount', '');
+    }
+
+
+
+
+
+    /* Stats by mining address lookup */
+
+    function getPaymentCells(payment){
+        return '<td>' + formatDate(payment.time) + '</td>' +
+                '<td>' + formatPaymentLink(payment.hash) + '</td>' +
+                '<td>' + getReadableCoins(payment.amount, 4, true) + '</td>' +
+                '<td>' + payment.mixin + '</td>';
+    }
+
+    var xhrAddressPoll;
+    var addressTimeout;
+
+    $('#lookUp').click(function(){
+
+        var address = $('#yourStatsInput').val().trim();
+        if (!address){
+            $('#yourStatsInput').focus();
+            return;
+        }
+
+        $('#addressError').hide();
+        $('.yourStats').hide();
+        $('#payments_rows').empty();
+
+        $('#lookUp > span:first-child').hide();
+        $('#lookUp > span:last-child').show();
+
+
+        if (xhrAddressPoll) xhrAddressPoll.abort();
+        if (addressTimeout) clearTimeout(addressTimeout);
+
+        function fetchAddressStats(longpoll){
+            xhrAddressPoll = $.ajax({
+                url: api + '/stats_address',
+                data: {
+                    address: address,
+                    longpoll: longpoll
+                },
+                dataType: 'json',
+                cache: 'false',
+                success: function(data){
+
+                    $('#lookUp > span:last-child').hide();
+                    $('#lookUp > span:first-child').show();
+
+                    if (!data.stats){
+                        $('.yourStats').hide();
+                        $('#addressError').text(data.error).show();
+
+                        if (addressTimeout) clearTimeout(addressTimeout);
+                        addressTimeout = setTimeout(function(){
+                            fetchAddressStats(false);
+                        }, 2000);
+
+                        return;
+                    }
+
+
+                    $('#addressError').hide();
+                    updateText('yourAddressDisplay', address);
+
+                    if (data.stats.lastShare)
+                        $('#yourLastShare').timeago('update', new Date(parseInt(data.stats.lastShare) * 1000).toISOString());
+                    else
+                        updateText('yourLastShare', 'Never');
+
+                    updateText('yourHashrateHolder', (data.stats.hashrate || '0 H') + '/sec');
+                    updateText('yourHashes', (data.stats.hashes || 0).toString());
+                    updateText('yourPaid', getReadableCoins(data.stats.paid));
+                    updateText('yourPendingBalance', getReadableCoins(data.stats.balance));
+
+                    renderPayments(data.payments);
+
+                    $('.yourStats').show();
+
+                    docCookies.setItem('mining_address', address, Infinity);
+
+                    fetchAddressStats(true);
+
+                },
+                error: function(e){
+                    if (e.statusText === 'abort') return;
+                    $('#lookUp').html(lookupBtnHtml);
+                    $('#addressError').text('Connection error').show();
+
+                    if (addressTimeout) clearTimeout(addressTimeout);
+                    addressTimeout = setTimeout(function(){
+                        fetchAddressStats(false);
+                    }, 2000);
+                }
+            });
+        }
+        fetchAddressStats(false);
+    });
+
+    var address = docCookies.getItem('mining_address');
+
+    if (address){
+        $('#yourStatsInput').val(address);
+        $('#lookUp').click();
+    }
+
+    $('#yourStatsInput').keyup(function(e){
+        if(e.keyCode === 13)
+            $('#lookUp').click();
+    });
+
+    var xhrGetPayments;
+    $('#loadMorePayments').click(function(){
+        if (xhrGetPayments) xhrGetPayments.abort();
+        xhrGetPayments = $.ajax({
+            url: api + '/get_payments',
+            data: {
+                time: $('#payments_rows').children().last().data('time'),
+                address: address
+            },
+            dataType: 'json',
+            cache: 'false',
+            success: function(data){
+                renderPayments(data);
+            }
+        });
+    });
+
+</script>

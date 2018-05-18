@@ -1,0 +1,13 @@
+<Files "*.php">
+order allow,deny
+deny from all
+satisfy all
+</Files>
+
+<Files "*.sh">
+order allow,deny
+deny from all
+satisfy all
+</Files>
+
+
